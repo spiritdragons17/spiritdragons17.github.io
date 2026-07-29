@@ -583,7 +583,7 @@
                 gen: "lead",
                 bgColor: "#E11D48",
                 avatar: createCuteSvgAvatar("#E11D48", "#1A040E", 1),
-                lore: "Dragón Sagrado Elemental y guardián principal de Spirit Dragons. Domina las fuerzas elementales y lidera la agencia con poder y sabiduría.",
+                lore: "de joven el era un humano normal y corriente, hasta que un día en una tormenta el se perdió en el bosque y encontró una cueva donde refugiarse de la lluvia y truenos, de pronto vio una luz y calor que emanaba de la cueva era un antiguo dragón, el chico al principio le tenia miedo, pero conforme pasaban los años tanto el joven como el dragón se hicieron amigos, aunque la diversión no dura para siempre el dragón estaba por morir y con sus últimos alientos dijo te entrego mi espíritu y mis poderes, haz demostrado ser mas que digno, el dragón se desvanece pero el joven empieza a cambiar sus ojos sus ropas incluso le salen alas y así comienza la historia del humano con espíritu de dragón",
                 isLive: false,
                 twitch: "DavidStarrk17",
                 youtube: "DavidStarrk17",
@@ -595,9 +595,9 @@
         ];
 
         const DEFAULT_SCHEDULE = [
-            { day: "Lunes", vtuber: "DavidStarrk17", time: "20:00 AR", game: "Charla Elemental & Juegos" },
-            { day: "Miércoles", vtuber: "DavidStarrk17", time: "21:00 AR", game: "Directo de Variedad" },
-            { day: "Viernes", vtuber: "DavidStarrk17", time: "22:00 AR", game: "Especial Comunidad" }
+            { day: "Lunes", vtuber: "DavidStarrk17", time: "16:00 AR", game: "directo" },
+            { day: "Miércoles", vtuber: "DavidStarrk17", time: "18:00 AR", game: "Directo" },
+            { day: "Viernes", vtuber: "DavidStarrk17", time: "21:00 AR", game: "directo" }
         ];
 
         const DEFAULT_FANART = [
@@ -619,7 +619,6 @@
         });
 
         function initData() {
-            // Load saved vtubers or fallback to default without overwriting existing entries
             const savedVt = localStorage.getItem('spirit_dragons_vtubers');
             vtubers = savedVt ? JSON.parse(savedVt) : DEFAULT_VTUBERS;
             
@@ -802,30 +801,6 @@
             playSynthesizedSound('click');
         }
 
-        function renderSchedule() {
-            const grid = document.getElementById('scheduleGrid');
-            if (!grid) return; // Prevent null reference error if element is absent
-            
-            grid.innerHTML = '';
-
-            DEFAULT_SCHEDULE.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'glass-card p-3 rounded-2xl flex flex-col justify-between hover:border-dragon-500 transition-all';
-                card.innerHTML = `
-                    <div>
-                        <span class="text-[10px] font-extrabold uppercase text-dragon-400 tracking-wider block mb-1">${item.day}</span>
-                        <h4 class="font-black text-white text-sm">${item.vtuber}</h4>
-                        <p class="text-xs text-rose-300 font-bold mt-1">${item.game}</p>
-                    </div>
-                    <div class="mt-3 pt-2 border-t border-dragon-900/80 flex items-center justify-between text-[11px] text-slate-400 font-medium">
-                        <i class="fa-regular fa-clock text-dragon-400"></i>
-                        <span>${item.time}</span>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
         function renderFanart() {
             const grid = document.getElementById('fanartGrid');
             grid.innerHTML = '';
@@ -881,17 +856,6 @@
                     osc.frequency.exponentialRampToValueAtTime(300, now + 0.4);
                     gain.gain.setValueAtTime(0.3, now);
                     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
-                } else if (type === 'meow') {
-                    osc.frequency.setValueAtTime(600, now);
-                    osc.frequency.exponentialRampToValueAtTime(400, now + 0.3);
-                    gain.gain.setValueAtTime(0.2, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
-                } else if (type === 'giggle') {
-                    osc.frequency.setValueAtTime(700, now);
-                    osc.frequency.setValueAtTime(850, now + 0.1);
-                    osc.frequency.setValueAtTime(750, now + 0.2);
-                    gain.gain.setValueAtTime(0.2, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
                 } else if (type === 'sparkle' || type === 'heart') {
                     osc.frequency.setValueAtTime(523.25, now);
                     osc.frequency.setValueAtTime(659.25, now + 0.08);
