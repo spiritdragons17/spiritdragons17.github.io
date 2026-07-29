@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spirit Dragons - VTuber Family & Agency Hub</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tone.js for Web Audio Synthesis -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Fredoka', 'M PLUS Rounded 1c', 'sans-serif'],
+                        rounded: ['M PLUS Rounded 1c', 'sans-serif'],
+                    },
+                    colors: {
+                        dragon: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            300: '#fda4af',
+                            400: '#fb7185',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                            800: '#9f1239',
+                            900: '#881337',
+                            950: '#4c0519',
+                            dark: '#080104'
+                        },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706'
+                        }
+                    },
+                    boxShadow: {
+                        'dragon-glow': '0 0 25px rgba(225, 29, 72, 0.5)',
+                        'gold-glow': '0 0 20px rgba(245, 158, 11, 0.4)',
+                        'card-pop': '0 10px 30px -10px rgba(225, 29, 72, 0.3)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(180deg, #050103 0%, #150208 30%, #29020b 65%, #4a0011 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #f8fafc;
+            font-family: 'Fredoka', 'M PLUS Rounded 1c', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: rgba(15, 2, 8, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(225, 29, 72, 0.3);
+        }
+
+        .glass-card {
+            background: rgba(26, 4, 14, 0.85);
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(225, 29, 72, 0.25);
+        }
+
+        .avatar-card {
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .avatar-card:hover {
+            transform: translateY(-10px) scale(1.04);
+        }
+
+        .avatar-card:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .title-pill {
+            background: linear-gradient(135deg, #e11d48 0%, #ff2a55 50%, #881337 100%);
+            box-shadow: 0 6px 0 0 #4c0519, 0 10px 20px rgba(225, 29, 72, 0.4);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #080104;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #be123c;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f43f5e;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(2deg); }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        .floating {
+            animation: float 4.5s ease-in-out infinite;
+        }
+
+        .floating-delayed {
+            animation: float 5.5s ease-in-out 2s infinite;
+        }
+
+        .pulse-effect {
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="flex flex-col justify-between relative selection:bg-dragon-600 selection:text-white">
+
+    <canvas id="sparkleCanvas" class="fixed inset-0 pointer-events-none z-0 opacity-80"></canvas>
+
+    <header class="relative z-20 top-0 w-full px-4 py-4 max-w-6xl mx-auto">
+        <nav class="glass-panel rounded-full px-5 py-3 shadow-2xl shadow-dragon-950/80 flex flex-wrap justify-between items-center gap-3 border-2 border-dragon-600/80">
+            
+            <a href="#" onclick="switchTab('members')" class="flex items-center gap-3 group">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center p-1 group-hover:scale-110 transition-transform shrink-0">
+                    <svg viewBox="0 0 500 500" class="w-full h-full drop-shadow-[0_0_20px_rgba(244,63,94,0.95)]" preserveAspectRatio="xMidYMid meet">
+                        <defs>
+                            <linearGradient id="roarSkin" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#FF2A55"/>
+                                <stop offset="45%" stop-color="#DC2626"/>
+                                <stop offset="85%" stop-color="#800014"/>
+                                <stop offset="100%" stop-color="#300006"/>
+                            </linearGradient>
+                            <linearGradient id="roarMouth" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#1A0003"/>
+                                <stop offset="60%" stop-color="#66000F"/>
+                                <stop offset="100%" stop-color="#FF2200"/>
+                            </linearGradient>
+                            <linearGradient id="roarHorn" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#E2E8F0"/>
+                                <stop offset="35%" stop-color="#94A3B8"/>
+                                <stop offset="75%" stop-color="#334155"/>
+                                <stop offset="100%" stop-color="#0F172A"/>
+                            </linearGradient>
+                            <radialGradient id="roarEye" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#FFFFFF"/>
+                                <stop offset="30%" stop-color="#FEF08A"/>
+                                <stop offset="70%" stop-color="#F59E0B"/>
+                                <stop offset="100%" stop-color="#DC2626"/>
+                            </radialGradient>
+                            <radialGradient id="fireBreath" cx="70%" cy="50%" r="60%">
+                                <stop offset="0%" stop-color="#FFFFFF"/>
+                                <stop offset="25%" stop-color="#FFEA00"/>
+                                <stop offset="60%" stop-color="#FF4500"/>
+                                <stop offset="90%" stop-color="#DC2626" stop-opacity="0.8"/>
+                                <stop offset="100%" stop-color="#800010" stop-opacity="0"/>
+                            </radialGradient>
+                        </defs>
+                        <!-- Dragon SVG Graphic -->
+                        <path d="M 210 260 Q 130 250 40 310 Q 110 340 180 320 Q 90 380 20 420 Q 120 410 200 350 Q 140 450 80 480 Q 200 440 230 360 Z" fill="url(#fireBreath)"/>
+                        <path d="M 330 260 C 380 320 430 380 470 460 L 330 460 C 290 410 260 360 240 330 Z" fill="#200105" stroke="#000" stroke-width="9"/>
+                        <polygon points="380,240 445,215 400,270" fill="#B91C1C" stroke="#000" stroke-width="7" stroke-linejoin="round"/>
+                        <polygon points="415,290 475,275 430,320" fill="#991B1B" stroke="#000" stroke-width="7" stroke-linejoin="round"/>
+                        <path d="M 320 170 C 350 90 430 20 490 5 C 445 70 395 140 360 200 Z" fill="url(#roarHorn)" stroke="#000" stroke-width="9" stroke-linejoin="round"/>
+                        <path d="M 285 180 C 310 115 375 55 430 35 C 395 90 350 150 325 200 Z" fill="url(#roarHorn)" stroke="#000" stroke-width="7" stroke-linejoin="round"/>
+                        <path d="M 280 185 Q 190 175 105 210 Q 160 255 255 265 Q 320 265 365 225 Z" fill="url(#roarSkin)" stroke="#000" stroke-width="9" stroke-linejoin="round"/>
+                        <path d="M 125 220 Q 215 260 265 270 Q 235 345 160 345 Q 195 295 125 220 Z" fill="url(#roarMouth)" stroke="#000" stroke-width="7"/>
+                        <path d="M 265 270 Q 235 365 160 355 Q 225 425 310 375 Q 345 320 335 270 Z" fill="url(#roarSkin)" stroke="#000" stroke-width="9" stroke-linejoin="round"/>
+                        <polygon points="130,215 140,242 148,220" fill="#FFF" stroke="#000" stroke-width="4" stroke-linejoin="round"/>
+                        <polygon points="152,220 163,252 170,223" fill="#FFF" stroke="#000" stroke-width="4" stroke-linejoin="round"/>
+                        <polygon points="168,350 178,322 185,348" fill="#FFF" stroke="#000" stroke-width="4" stroke-linejoin="round"/>
+                        <polygon points="190,345 202,316 208,342" fill="#FFF" stroke="#000" stroke-width="4" stroke-linejoin="round"/>
+                        <polygon points="235,195 270,185 280,208 248,212" fill="url(#roarEye)" stroke="#000" stroke-width="7" stroke-linejoin="round"/>
+                        <line x1="258" y1="187" x2="258" y2="210" stroke="#000" stroke-width="6" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div>
+                    <span class="text-xl sm:text-2xl font-black text-dragon-400 tracking-wide flex items-center gap-1.5 drop-shadow">
+                        SPIRIT DRAGONS <span class="text-[10px] bg-dragon-950 text-dragon-300 border border-dragon-700 px-2 py-0.5 rounded-full font-bold">VTUBERS</span>
+                    </span>
+                    <p class="text-[11px] text-dragon-300/80 font-bold -mt-1">Familia & Agencia Virtual</p>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-2">
+                <button onclick="switchTab('members')" id="navTabMembers" class="px-3.5 py-2 rounded-full bg-dragon-600 text-white font-bold transition-all text-xs sm:text-sm border border-dragon-400 shadow flex items-center gap-1.5">
+                    <i class="fa-solid fa-users"></i> <span class="hidden sm:inline">Familia</span>
+                </button>
+                <button onclick="switchTab('fanart')" id="navTabFanart" class="px-3.5 py-2 rounded-full bg-dragon-950/80 text-dragon-200 font-bold hover:bg-dragon-600 hover:text-white transition-all text-xs sm:text-sm border border-dragon-800 flex items-center gap-1.5">
+                    <i class="fa-solid fa-palette"></i> <span class="hidden sm:inline">Fan Art</span>
+                </button>
+
+                <!-- Admin Status Button -->
+                <button id="adminAuthBtn" onclick="toggleAdminModal()" class="ml-1 px-3 py-2 rounded-full bg-slate-900 text-gold-400 hover:text-gold-300 hover:bg-slate-800 font-bold transition-all text-xs border border-gold-500/50 flex items-center gap-1 shadow-md">
+                    <i id="adminLockIcon" class="fa-solid fa-lock text-xs"></i>
+                    <span id="adminBtnLabel" class="hidden md:inline">Admin</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <div id="adminBar" class="hidden relative z-20 max-w-6xl mx-auto px-4 mt-2">
+        <div class="bg-gradient-to-r from-amber-950/90 via-dragon-950/90 to-amber-950/90 border-2 border-gold-500/80 rounded-2xl p-3 backdrop-blur-md shadow-lg flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2 text-gold-400 font-bold">
+                <span class="bg-gold-500 text-slate-950 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase">👑 Modo Creador</span>
+                <span class="text-slate-200">Panel de Administración Activo</span>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+                <button onclick="openManageModal()" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all flex items-center gap-1.5 shadow">
+                    <i class="fa-solid fa-plus"></i> VTuber
+                </button>
+                <button onclick="openFanartModal()" class="px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold transition-all flex items-center gap-1.5 shadow">
+                    <i class="fa-solid fa-image"></i> Fan Art
+                </button>
+                <button onclick="exportData()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-gold-400 border border-gold-500/40 font-bold transition-all flex items-center gap-1">
+                    <i class="fa-solid fa-download"></i> Respaldar
+                </button>
+                <button onclick="importDataTrigger()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-gold-400 border border-gold-500/40 font-bold transition-all flex items-center gap-1">
+                    <i class="fa-solid fa-upload"></i> Cargar JSON
+                </button>
+                <button onclick="lockAdminSession()" class="px-3 py-1.5 rounded-xl bg-dragon-900 hover:bg-dragon-800 text-white font-bold transition-all flex items-center gap-1">
+                    <i class="fa-solid fa-lock"></i> Salir
+                </button>
+                <input type="file" id="importFileInput" onchange="importData(event)" accept=".json" class="hidden">
+            </div>
+        </div>
+    </div>
+
+    <main class="relative z-10 max-w-6xl mx-auto px-4 py-6 w-full flex-grow">
+        
+        <section class="text-center my-4 relative">
+            <div class="inline-block relative">
+                <div class="absolute -top-6 -left-8 text-4xl floating">✨</div>
+                <div class="absolute -bottom-4 -right-8 text-4xl floating-delayed">🐲</div>
+                
+                <div class="inline-flex items-center gap-2 bg-dragon-950/90 text-dragon-300 border border-dragon-700 font-bold px-4 py-1.5 rounded-full text-xs uppercase tracking-wider shadow-lg mb-3">
+                    <span class="w-2 h-2 rounded-full bg-dragon-500 animate-ping"></span>
+                    <span>✨ ¡Bienvenidos al Reino Dragón! ✨</span>
+                </div>
+
+                <h1 class="text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-tight">
+                    Nuestros <span class="text-transparent bg-clip-text bg-gradient-to-r from-dragon-400 via-rose-300 to-gold-400">Espíritus Talentosos</span>
+                </h1>
+                
+                <p class="text-slate-300 font-medium max-w-2xl mx-auto text-sm sm:text-base mt-2 drop-shadow-sm">
+                    ¡Bienvenidos dragonzuelos, aquí comienza la magia! Explora la agencia virtual, conoce a las VTubers, revisa sus directos semanales y disfruta de la galería comunitaria.
+                </p>
+            </div>
+        </section>
+
+        <div id="tab-members" class="tab-content transition-all duration-300">
+            <section class="mt-6 mb-12">
+                
+                <div class="flex justify-center mb-8">
+                    <div class="title-pill text-white text-lg sm:text-2xl font-black px-8 py-3 rounded-full text-center tracking-wide border-4 border-white flex items-center gap-3 floating shadow-2xl">
+                        <span>🔥</span>
+                        <span>Conoce a nuestra familia...</span>
+                        <span>🔥</span>
+                    </div>
+                </div>
+
+                <!-- Search & Filters Bar -->
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-8 glass-panel p-4 rounded-3xl shadow-xl">
+                    <div class="relative flex-1 min-w-[220px]">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-dragon-400"></i>
+                        <input type="text" id="searchInput" oninput="filterVTubers()" placeholder="Buscar VTuber por nombre, lore o tag..." 
+                            class="w-full pl-11 pr-4 py-2.5 rounded-full bg-slate-950/90 border-2 border-dragon-900 text-white focus:border-dragon-500 focus:outline-none text-sm font-bold placeholder-dragon-300/50">
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 text-xs font-bold" id="tagFilters">
+                        <button onclick="setFilter('all')" class="filter-btn active px-4 py-2 rounded-full bg-dragon-600 text-white shadow-sm transition-all" data-tag="all">Todos</button>
+                        <button onclick="setFilter('live')" class="filter-btn px-4 py-2 rounded-full bg-slate-950 text-dragon-400 hover:bg-dragon-950 transition-all border border-dragon-900" data-tag="live">🔴 En Vivo</button>
+                        <button onclick="setFilter('gen1')" class="filter-btn px-4 py-2 rounded-full bg-slate-950 text-purple-300 hover:bg-purple-950 transition-all border border-purple-900" data-tag="gen1">Gen 1</button>
+                        <button onclick="setFilter('gen2')" class="filter-btn px-4 py-2 rounded-full bg-slate-950 text-indigo-300 hover:bg-indigo-950 transition-all border border-indigo-900" data-tag="gen2">Gen 2</button>
+                    </div>
+                </div>
+
+                <!-- Grid of VTubers -->
+                <div id="vtuberGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center max-w-5xl mx-auto">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+
+                <div id="noResults" class="hidden text-center py-12 glass-panel rounded-3xl mt-6">
+                    <p class="text-4xl mb-2">🐉💔</p>
+                    <p class="text-lg font-bold text-dragon-400">No se encontraron VTubers con esos filtros.</p>
+                    <p class="text-xs text-slate-400 mt-1">Intenta con otra palabra clave.</p>
+                </div>
+            </section>
+        </div>
+
+        <div id="tab-fanart" class="tab-content hidden transition-all duration-300">
+            <section class="mt-6 mb-12 max-w-5xl mx-auto">
+                <div class="glass-panel p-6 rounded-3xl border-2 border-dragon-600/50 shadow-2xl">
+                    <div class="flex flex-wrap justify-between items-center gap-4 mb-6 border-b border-dragon-900 pb-4">
+                        <div>
+                            <h2 class="text-2xl font-black text-rose-400 flex items-center gap-2">
+                                <i class="fa-solid fa-palette"></i> Galería de Fan Art de la Comunidad
+                            </h2>
+                            <p class="text-xs text-slate-300 font-medium">Ilustraciones creadas con amor por los dragoncitos fanes.</p>
+                        </div>
+                        <button onclick="openFanartModal()" class="px-4 py-2 rounded-2xl bg-dragon-600 hover:bg-dragon-500 text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Compartir Fan Art
+                        </button>
+                    </div>
+
+                    <!-- Fan Art Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" id="fanartGrid">
+                        <!-- Dynamic fan art items -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <div id="profileModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-slate-900 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-4 border-dragon-600 shadow-2xl transform scale-90 transition-all duration-300 relative" id="modalContainer">
+            <button onclick="closeProfileModal()" class="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-slate-800/80 hover:bg-dragon-600 text-white border border-slate-700 flex items-center justify-center font-bold transition-all shadow-lg">
+                ✕
+            </button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <div id="adminAuthModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-slate-900 border-4 border-gold-500 rounded-3xl max-w-md w-full p-6 text-white shadow-2xl text-center relative">
+            <button onclick="closeAdminAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white font-bold">✕</button>
+            <div class="w-16 h-16 rounded-full bg-gold-500/20 border-2 border-gold-500 text-gold-400 flex items-center justify-center text-3xl mx-auto mb-3">
+                🔐
+            </div>
+            <h3 class="text-2xl font-black text-gold-400 mb-1">Acceso de Creador</h3>
+            <p class="text-xs text-slate-300 mb-4">Ingresa la clave de administrador para gestionar la web.</p>
+
+            <form onsubmit="submitAdminPin(event)" class="flex flex-col gap-3">
+                <input type="password" id="adminPinInput" maxlength="10" placeholder="••••••••" required
+                       class="w-full text-center tracking-widest text-xl py-3 rounded-2xl bg-slate-950 border-2 border-gold-500/60 text-gold-300 focus:border-gold-400 focus:outline-none font-black">
+                
+                <div id="adminAuthError" class="text-dragon-400 text-xs font-bold hidden">
+                    ⚠️ PIN Incorrecto. Inténtalo de nuevo.
+                </div>
+
+                <div class="flex gap-2 mt-2">
+                    <button type="button" onclick="closeAdminAuthModal()" class="w-1/2 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-700 font-bold text-slate-300 text-xs">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="w-1/2 py-2.5 rounded-2xl bg-gold-500 hover:bg-gold-400 text-slate-950 font-black text-xs transition-all shadow-md">
+                        Desbloquear 🔓
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="manageModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-slate-900 border-4 border-dragon-600 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 text-white shadow-2xl relative">
+            <button onclick="closeManageModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-800 hover:bg-dragon-600 text-slate-300 hover:text-white font-bold flex items-center justify-center transition-all">✕</button>
+
+            <div class="flex items-center gap-3 border-b-2 border-dragon-900/60 pb-3 mb-6">
+                <span class="text-3xl">🐉</span>
+                <div>
+                    <h3 class="text-2xl font-black text-dragon-400" id="editorTitle">Añadir Nuevo VTuber</h3>
+                    <p class="text-xs text-slate-400">Completa los datos para actualizar la lista de Spirit Dragons.</p>
+                </div>
+            </div>
+
+            <form id="vtuberForm" onsubmit="handleFormSubmit(event)" class="space-y-4 text-xs font-bold">
+                <input type="hidden" id="editIndex" value="-1">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-dragon-300 mb-1">Nombre del VTuber *</label>
+                        <input type="text" id="vName" required placeholder="Ej: Ignis Flame" class="w-full p-2.5 rounded-xl bg-slate-950 border border-dragon-900 text-white focus:border-dragon-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-dragon-300 mb-1">Título / Rol *</label>
+                        <input type="text" id="vTitle" required placeholder="Ej: Dragona de Fuego" class="w-full p-2.5 rounded-xl bg-slate-950 border border-dragon-900 text-white focus:border-dragon-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-dragon-300 mb-1">Generación / Grupo</label>
+                        <select id="vGen" class="w-full p-2.5 rounded-xl bg-slate-950 border border-dragon-900 text-white focus:border-dragon-500 focus:outline-none">
+                            <option value="gen1">Generación 1</option>
+                            <option value="gen2">Generación 2</option>
+                            <option value="lead">Líder / Fundador</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-dragon-300 mb-1">Color Principal Tema</label>
+                        <div class="flex items-center gap-2">
+                            <input type="color" id="vBgColor" value="#E11D48" onchange="document.getElementById('vBgHex').innerText=this.value" class="w-10 h-10 rounded-xl cursor-pointer bg-slate-950 border border-dragon-900 p-1">
+                            <span id="vBgHex" class="text-slate-300 font-mono">#E11D48</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center pt-5">
+                        <label class="flex items-center gap-2 cursor-pointer text-dragon-300">
+                            <input type="checkbox" id="vIsLive" class="w-5 h-5 rounded accent-dragon-600 cursor-pointer">
+                            <span>🔴 Transmitiendo En Vivo</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-dragon-300 mb-1">Avatar / Imagen (URL o Archivo)</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="vAvatar" placeholder="Pegar enlace de imagen (https://...)" class="flex-1 p-2.5 rounded-xl bg-slate-950 border border-dragon-900 text-white focus:border-dragon-500 focus:outline-none">
+                        <label class="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-gold-400 font-bold border border-gold-500/40 cursor-pointer flex items-center gap-1">
+                            <i class="fa-solid fa-folder-open"></i> Subir
+                            <input type="file" accept="image/*" onchange="handleFileUpload(event)" class="hidden">
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-dragon-300 mb-1">Frase Característica</label>
+                    <input type="text" id="vPhrase" placeholder='Ej: "¡Prepárense para arder de emoción!"' class="w-full p-2.5 rounded-xl bg-slate-950 border border-dragon-900 text-white focus:border-dragon-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-dragon-300 mb-1">Lore / Historia y Detalles</label>
+                    <textarea id="vLore" rows="3" placeholder="Describe a este personaje, sus hábitos y gustos..." class="w-full p-2.5 rounded-xl bg-slate-950 border border-dragon-900 text-white focus:border-dragon-500 focus:outline-none"></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div>
+                        <label class="block text-purple-300 mb-1"><i class="fa-brands fa-twitch"></i> Twitch</label>
+                        <input type="text" id="vTwitch" placeholder="usuario_twitch" class="w-full p-2 rounded-xl bg-slate-950 border border-purple-900 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-dragon-300 mb-1"><i class="fa-brands fa-youtube"></i> YouTube</label>
+                        <input type="text" id="vYoutube" placeholder="CanalYT" class="w-full p-2 rounded-xl bg-slate-950 border border-dragon-900 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 mb-1"><i class="fa-brands fa-x-twitter"></i> X / Twitter</label>
+                        <input type="text" id="vTwitter" placeholder="usuario_x" class="w-full p-2 rounded-xl bg-slate-950 border border-slate-700 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-indigo-300 mb-1"><i class="fa-brands fa-discord"></i> Discord</label>
+                        <input type="text" id="vDiscord" placeholder="servidor" class="w-full p-2 rounded-xl bg-slate-950 border border-indigo-900 text-white">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-4 border-t border-dragon-900/60">
+                    <button type="button" id="btnDeleteVTuber" onclick="confirmDeleteFromForm()" class="px-4 py-2 rounded-xl bg-dragon-950 text-dragon-300 hover:bg-dragon-800 hover:text-white font-bold border border-dragon-800 transition-all hidden">
+                        🗑️ Eliminar
+                    </button>
+                    <div class="flex gap-2 ml-auto">
+                        <button type="button" onclick="closeManageModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700">Cancelar</button>
+                        <button type="submit" class="px-6 py-2 rounded-xl bg-dragon-600 hover:bg-dragon-500 text-white font-black transition-all shadow-lg">Guardar VTuber</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="fanartModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-slate-900 border-4 border-rose-600 rounded-3xl max-w-lg w-full p-6 text-white shadow-2xl relative">
+            <button onclick="closeFanartModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white font-bold">✕</button>
+            <h3 class="text-2xl font-black text-rose-400 mb-1 flex items-center gap-2">
+                <i class="fa-solid fa-palette"></i> Publicar Fan Art
+            </h3>
+            <p class="text-xs text-slate-300 mb-4">Añade una ilustración a la galería de la comunidad.</p>
+
+            <form onsubmit="handleFanartSubmit(event)" class="space-y-4 text-xs font-bold">
+                <div>
+                    <label class="block text-rose-300 mb-1">Título de la Obra *</label>
+                    <input type="text" id="faTitle" required placeholder="Ej: Ignis desatando su poder" class="w-full p-2.5 rounded-xl bg-slate-950 border border-rose-900 text-white focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-rose-300 mb-1">Artista / Créditos *</label>
+                    <input type="text" id="faArtist" required placeholder="Ej: @DragonFan_Artist" class="w-full p-2.5 rounded-xl bg-slate-950 border border-rose-900 text-white focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-rose-300 mb-1">Enlace de la Imagen (URL) *</label>
+                    <input type="url" id="faImage" required placeholder="https://..." class="w-full p-2.5 rounded-xl bg-slate-950 border border-rose-900 text-white focus:outline-none">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeFanartModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300">Cancelar</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black">Publicar Artwork</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="customConfirmModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-slate-900 border-2 border-dragon-600 rounded-3xl max-w-sm w-full p-6 text-white text-center shadow-2xl">
+            <div class="text-4xl mb-2">🐉</div>
+            <h4 class="text-lg font-black text-dragon-400 mb-2" id="confirmTitle">¿Estás seguro?</h4>
+            <p class="text-xs text-slate-300 mb-6" id="confirmMessage">Esta acción no se puede deshacer.</p>
+            <div class="flex gap-3 justify-center">
+                <button id="confirmBtnCancel" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300">Cancelar</button>
+                <button id="confirmBtnOk" class="px-5 py-2 rounded-xl bg-dragon-600 hover:bg-dragon-500 text-xs font-black text-white shadow-md">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="relative z-10 bg-slate-950/90 backdrop-blur border-t-4 border-dragon-800 py-8 px-4 text-center mt-12">
+        <div class="max-w-4xl mx-auto flex flex-col items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-14 h-14 flex items-center justify-center p-1 shrink-0">
+                    <svg viewBox="0 0 500 500" class="w-full h-full drop-shadow-[0_0_12px_rgba(244,63,94,0.8)]" preserveAspectRatio="xMidYMid meet">
+                        <path d="M 210 260 Q 130 250 40 310 Q 110 340 180 320 Q 90 380 20 420 Q 120 410 200 350 Q 140 450 80 480 Q 200 440 230 360 Z" fill="url(#fireBreath)"/>
+                        <path d="M 330 260 C 380 320 430 380 470 460 L 330 460 C 290 410 260 360 240 330 Z" fill="#200105" stroke="#000" stroke-width="9"/>
+                        <polygon points="380,240 445,215 400,270" fill="#B91C1C" stroke="#000" stroke-width="7"/>
+                        <polygon points="415,290 475,275 430,320" fill="#991B1B" stroke="#000" stroke-width="7"/>
+                        <path d="M 320 170 C 350 90 430 20 490 5 C 445 70 395 140 360 200 Z" fill="url(#roarHorn)" stroke="#000" stroke-width="9"/>
+                        <path d="M 285 180 C 310 115 375 55 430 35 C 395 90 350 150 325 200 Z" fill="url(#roarHorn)" stroke="#000" stroke-width="7"/>
+                        <path d="M 280 185 Q 190 175 105 210 Q 160 255 255 265 Q 320 265 365 225 Z" fill="url(#roarSkin)" stroke="#000" stroke-width="9"/>
+                        <path d="M 125 220 Q 215 260 265 270 Q 235 345 160 345 Q 195 295 125 220 Z" fill="url(#roarMouth)" stroke="#000" stroke-width="7"/>
+                        <path d="M 265 270 Q 235 365 160 355 Q 225 425 310 375 Q 345 320 335 270 Z" fill="url(#roarSkin)" stroke="#000" stroke-width="9"/>
+                        <polygon points="130,215 140,242 148,220" fill="#FFF" stroke="#000" stroke-width="4"/>
+                        <polygon points="152,220 163,252 170,223" fill="#FFF" stroke="#000" stroke-width="4"/>
+                        <polygon points="168,350 178,322 185,348" fill="#FFF" stroke="#000" stroke-width="4"/>
+                        <polygon points="190,345 202,316 208,342" fill="#FFF" stroke="#000" stroke-width="4"/>
+                        <polygon points="235,195 270,185 280,208 248,212" fill="url(#roarEye)" stroke="#000" stroke-width="7"/>
+                        <line x1="258" y1="187" x2="258" y2="210" stroke="#000" stroke-width="6"/>
+                    </svg>
+                </div>
+                <span class="text-lg font-extrabold text-dragon-400">Spirit Dragons VTuber Agency</span>
+            </div>
+            <p class="text-xs text-slate-300 max-w-md font-bold">
+                ¡Bienvenidos dragonzuelos, aquí comienza la magia!
+            </p>
+            <p class="text-[11px] text-slate-500 mt-1">© 2026 Spirit Dragons VTubers. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        function createCuteSvgAvatar(hairColor, bgCircle, styleType) {
+            return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="100%" height="100%">
+                <defs>
+                    <clipPath id="circleClip"><circle cx="150" cy="150" r="140"/></clipPath>
+                </defs>
+                <circle cx="150" cy="150" r="140" fill="${encodeURIComponent(bgCircle)}"/>
+                <g clip-path="url(#circleClip)">
+                    <path d="M 90 280 Q 150 220 210 280 L 230 300 L 70 300 Z" fill="#222" stroke="#000" stroke-width="8"/>
+                    <rect x="135" y="180" width="30" height="40" rx="10" fill="#FFE0BD" stroke="#000" stroke-width="8"/>
+                    ${styleType === 1 ? `<path d="M 40 120 Q 20 220 100 240 Q 150 250 200 240 Q 280 220 260 120 Z" fill="${encodeURIComponent(hairColor)}" stroke="#000" stroke-width="8"/>` : ''}
+                    ${styleType === 2 ? `<path d="M 50 80 Q 20 180 80 250 Q 220 250 250 180 Q 250 80 150 60 Z" fill="${encodeURIComponent(hairColor)}" stroke="#000" stroke-width="8"/>` : ''}
+                    <path d="M 60 90 Q 20 40 80 50 Z" fill="#FF4D6D" stroke="#000" stroke-width="8"/>
+                    <path d="M 240 90 Q 280 40 220 50 Z" fill="#FF4D6D" stroke="#000" stroke-width="8"/>
+                    <ellipse cx="150" cy="155" rx="65" ry="60" fill="#FFE0BD" stroke="#000" stroke-width="8"/>
+                    <ellipse cx="120" cy="150" rx="14" ry="20" fill="#111"/>
+                    <ellipse cx="180" cy="150" rx="14" ry="20" fill="#111"/>
+                    <circle cx="123" cy="143" r="6" fill="#FFF"/>
+                    <circle cx="183" cy="143" r="6" fill="#FFF"/>
+                    <ellipse cx="105" cy="168" rx="12" ry="6" fill="#FF85A1" opacity="0.6"/>
+                    <ellipse cx="195" cy="168" rx="12" ry="6" fill="#FF85A1" opacity="0.6"/>
+                    <path d="M 142 172 Q 150 180 158 172" fill="none" stroke="#000" stroke-width="5" stroke-linecap="round"/>
+                </g>
+                <circle cx="150" cy="150" r="140" fill="none" stroke="#000" stroke-width="12"/>
+            </svg>`;
+        }
+
+        const DEFAULT_VTUBERS = [
+            {
+                id: "vt_1785296823410",
+                name: "DavidStarrk17",
+                title: "Dragon Sagrado Elemental",
+                gen: "lead",
+                bgColor: "#E11D48",
+                avatar: createCuteSvgAvatar("#E11D48", "#1A040E", 1),
+                lore: "Dragón Sagrado Elemental y guardián principal de Spirit Dragons. Domina las fuerzas elementales y lidera la agencia con poder y sabiduría.",
+                isLive: false,
+                twitch: "DavidStarrk17",
+                youtube: "DavidStarrk17",
+                twitter: "DavidStarrk17",
+                discord: "spirit-dragons",
+                phrase: "¡Que la energía elemental ilumine vuestro camino!",
+                audioSamples: ["¡Bienvenidos, dragoncitos!", "¡Fuego Elemental!", "¡Por el Reino Dragón!"]
+            }
+        ];
+
+        const DEFAULT_SCHEDULE = [
+            { day: "Lunes", vtuber: "DavidStarrk17", time: "20:00 AR", game: "Charla Elemental & Juegos" },
+            { day: "Miércoles", vtuber: "DavidStarrk17", time: "21:00 AR", game: "Directo de Variedad" },
+            { day: "Viernes", vtuber: "DavidStarrk17", time: "22:00 AR", game: "Especial Comunidad" }
+        ];
+
+        const DEFAULT_FANART = [
+            { id: 1, title: "El Despertar Elemental", artist: "@DragonFanArt", image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=500&auto=format&fit=crop&q=80", likes: 177 }
+        ];
+
+        let vtubers = [];
+        let fanartList = [];
+        let activeFilter = 'all';
+        let isAdmin = false;
+        const DEFAULT_PIN = "19962026";
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initData();
+            checkAdminSession();
+            renderGrid();
+            renderFanart();
+            initSparkles();
+        });
+
+        function initData() {
+            // Load saved vtubers or fallback to default without overwriting existing entries
+            const savedVt = localStorage.getItem('spirit_dragons_vtubers');
+            vtubers = savedVt ? JSON.parse(savedVt) : DEFAULT_VTUBERS;
+            
+            const savedFa = localStorage.getItem('spirit_dragons_fanart');
+            fanartList = savedFa ? JSON.parse(savedFa) : DEFAULT_FANART;
+        }
+
+        function saveData() {
+            localStorage.setItem('spirit_dragons_vtubers', JSON.stringify(vtubers));
+            localStorage.setItem('spirit_dragons_fanart', JSON.stringify(fanartList));
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            const btnMap = {
+                'members': 'navTabMembers',
+                'fanart': 'navTabFanart'
+            };
+
+            Object.keys(btnMap).forEach(key => {
+                const btn = document.getElementById(btnMap[key]);
+                if (key === tabId) {
+                    btn.className = "px-3.5 py-2 rounded-full bg-dragon-600 text-white font-bold transition-all text-xs sm:text-sm border border-dragon-400 shadow flex items-center gap-1.5";
+                } else {
+                    btn.className = "px-3.5 py-2 rounded-full bg-dragon-950/80 text-dragon-200 font-bold hover:bg-dragon-600 hover:text-white transition-all text-xs sm:text-sm border border-dragon-800 flex items-center gap-1.5";
+                }
+            });
+
+            playSynthesizedSound('click');
+        }
+
+        function checkAdminSession() {
+            const session = localStorage.getItem('spirit_dragons_admin_session');
+            isAdmin = session === 'true';
+            updateAdminUI();
+        }
+
+        function updateAdminUI() {
+            const adminBar = document.getElementById('adminBar');
+            const adminLockIcon = document.getElementById('adminLockIcon');
+            const adminBtnLabel = document.getElementById('adminBtnLabel');
+
+            if (isAdmin) {
+                adminBar.classList.remove('hidden');
+                adminLockIcon.className = "fa-solid fa-lock-open text-emerald-400";
+                adminBtnLabel.innerText = "Admin On";
+            } else {
+                adminBar.classList.add('hidden');
+                adminLockIcon.className = "fa-solid fa-lock text-xs";
+                adminBtnLabel.innerText = "Admin";
+            }
+        }
+
+        function toggleAdminModal() {
+            if (isAdmin) {
+                showCustomConfirm("¿Cerrar modo administrador?", "La edición se ocultará.", () => {
+                    lockAdminSession();
+                });
+            } else {
+                document.getElementById('adminPinInput').value = '';
+                document.getElementById('adminAuthError').classList.add('hidden');
+                const modal = document.getElementById('adminAuthModal');
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        function closeAdminAuthModal() {
+            document.getElementById('adminAuthModal').classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        function submitAdminPin(e) {
+            e.preventDefault();
+            const input = document.getElementById('adminPinInput').value.trim();
+            const storedPin = localStorage.getItem('spirit_dragons_admin_pin') || DEFAULT_PIN;
+
+            if (input === storedPin) {
+                isAdmin = true;
+                localStorage.setItem('spirit_dragons_admin_session', 'true');
+                updateAdminUI();
+                closeAdminAuthModal();
+                showToast("🔓 ¡Modo Administrador activado!");
+                renderGrid();
+                playSynthesizedSound('cheer');
+            } else {
+                document.getElementById('adminAuthError').classList.remove('hidden');
+                playSynthesizedSound('error');
+            }
+        }
+
+        function lockAdminSession() {
+            isAdmin = false;
+            localStorage.removeItem('spirit_dragons_admin_session');
+            updateAdminUI();
+            showToast("🔒 Modo Administrador cerrado.");
+            renderGrid();
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('vtuberGrid');
+            const noResults = document.getElementById('noResults');
+            const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
+
+            grid.innerHTML = '';
+
+            const filtered = vtubers.filter(vt => {
+                const matchesSearch = vt.name.toLowerCase().includes(searchVal) || 
+                                      vt.title.toLowerCase().includes(searchVal) || 
+                                      (vt.lore && vt.lore.toLowerCase().includes(searchVal));
+                
+                if (!matchesSearch) return false;
+                if (activeFilter === 'all') return true;
+                if (activeFilter === 'live') return vt.isLive;
+                return vt.gen === activeFilter;
+            });
+
+            if (filtered.length === 0) {
+                noResults.classList.remove('hidden');
+                return;
+            } else {
+                noResults.classList.add('hidden');
+            }
+
+            filtered.forEach((vt) => {
+                const realIndex = vtubers.findIndex(item => item.id === vt.id);
+                
+                const card = document.createElement('div');
+                card.className = 'avatar-card flex flex-col items-center cursor-pointer group w-full max-w-[210px]';
+                card.onclick = () => openProfileModal(realIndex);
+
+                card.innerHTML = `
+                    <div class="relative w-36 h-36 sm:w-40 sm:h-40 rounded-full p-1.5 transition-all duration-300 group-hover:shadow-dragon-glow"
+                         style="background-color: ${vt.bgColor}">
+                        
+                        <div class="w-full h-full rounded-full overflow-hidden border-4 border-slate-950 bg-slate-900 relative flex items-center justify-center">
+                            <img src="${vt.avatar}" alt="${vt.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" 
+                                 onerror="this.onerror=null; this.src='https://placehold.co/300x300/e11d48/FFFFFF?text=${encodeURIComponent(vt.name)}'">
+                        </div>
+
+                        ${vt.isLive ? `
+                            <div class="absolute -top-1 -right-1 bg-dragon-600 text-white font-extrabold text-[10px] px-2.5 py-1 rounded-full border-2 border-white animate-bounce flex items-center gap-1 shadow-md z-10">
+                                <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> LIVE
+                            </div>
+                        ` : ''}
+
+                        <div class="absolute -bottom-2 bg-slate-950 text-white font-bold text-[11px] px-3 py-1 rounded-full border border-dragon-500 shadow-md opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                            <i class="fa-solid fa-sparkles text-dragon-400"></i> Perfil
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <h3 class="font-extrabold text-white text-base sm:text-lg group-hover:text-dragon-400 transition-colors leading-tight">
+                            ${vt.name}
+                        </h3>
+                        <span class="text-xs font-bold text-dragon-300/80 block mt-0.5">
+                            ${vt.title || 'VTuber Spirit'}
+                        </span>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        function filterVTubers() {
+            renderGrid();
+        }
+
+        function setFilter(tag) {
+            activeFilter = tag;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.dataset.tag === tag) {
+                    btn.className = 'filter-btn active px-4 py-2 rounded-full bg-dragon-600 text-white shadow-sm transition-all font-bold';
+                } else {
+                    btn.className = 'filter-btn px-4 py-2 rounded-full bg-slate-950 text-slate-300 hover:bg-dragon-950 transition-all border border-dragon-900 font-bold';
+                }
+            });
+            renderGrid();
+            playSynthesizedSound('click');
+        }
+
+        function renderSchedule() {
+            const grid = document.getElementById('scheduleGrid');
+            if (!grid) return; // Prevent null reference error if element is absent
+            
+            grid.innerHTML = '';
+
+            DEFAULT_SCHEDULE.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'glass-card p-3 rounded-2xl flex flex-col justify-between hover:border-dragon-500 transition-all';
+                card.innerHTML = `
+                    <div>
+                        <span class="text-[10px] font-extrabold uppercase text-dragon-400 tracking-wider block mb-1">${item.day}</span>
+                        <h4 class="font-black text-white text-sm">${item.vtuber}</h4>
+                        <p class="text-xs text-rose-300 font-bold mt-1">${item.game}</p>
+                    </div>
+                    <div class="mt-3 pt-2 border-t border-dragon-900/80 flex items-center justify-between text-[11px] text-slate-400 font-medium">
+                        <i class="fa-regular fa-clock text-dragon-400"></i>
+                        <span>${item.time}</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderFanart() {
+            const grid = document.getElementById('fanartGrid');
+            grid.innerHTML = '';
+
+            fanartList.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'glass-card rounded-2xl overflow-hidden group border-2 border-dragon-900/60 hover:border-dragon-500 transition-all';
+                card.innerHTML = `
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                             onerror="this.onerror=null; this.src='https://placehold.co/600x400/be123c/FFFFFF?text=FanArt'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60"></div>
+                    </div>
+                    <div class="p-4 flex items-center justify-between">
+                        <div>
+                            <h4 class="font-black text-white text-sm">${item.title}</h4>
+                            <p class="text-xs text-dragon-300 font-bold">${item.artist}</p>
+                        </div>
+                        <button onclick="likeFanart(${index})" class="px-3 py-1.5 rounded-xl bg-dragon-950 text-dragon-300 hover:bg-dragon-600 hover:text-white border border-dragon-800 text-xs font-bold transition-all flex items-center gap-1.5">
+                            <i class="fa-solid fa-heart text-dragon-500"></i> ${item.likes}
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function likeFanart(index) {
+            fanartList[index].likes += 1;
+            saveData();
+            renderFanart();
+            playSynthesizedSound('heart');
+        }
+
+        function playSynthesizedSound(type, label) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                const now = ctx.currentTime;
+
+                if (type === 'greeting') {
+                    osc.frequency.setValueAtTime(440, now);
+                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.2);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                } else if (type === 'roar') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, now);
+                    osc.frequency.exponentialRampToValueAtTime(300, now + 0.4);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+                } else if (type === 'meow') {
+                    osc.frequency.setValueAtTime(600, now);
+                    osc.frequency.exponentialRampToValueAtTime(400, now + 0.3);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                } else if (type === 'giggle') {
+                    osc.frequency.setValueAtTime(700, now);
+                    osc.frequency.setValueAtTime(850, now + 0.1);
+                    osc.frequency.setValueAtTime(750, now + 0.2);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                } else if (type === 'sparkle' || type === 'heart') {
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.08);
+                    osc.frequency.setValueAtTime(783.99, now + 0.16);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                } else {
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(600, now + 0.15);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                }
+
+                osc.start();
+                osc.stop(now + 0.45);
+            } catch(e) {}
+
+            if (label) {
+                showToast(`🗣️ Audio: "${label}"`);
+            }
+        }
+
+        function openProfileModal(index) {
+            const vt = vtubers[index];
+            if (!vt) return;
+
+            const modal = document.getElementById('profileModal');
+            const container = document.getElementById('modalContainer');
+            const content = document.getElementById('modalContent');
+
+            content.innerHTML = `
+                <div class="relative h-44 sm:h-52 w-full flex items-center justify-center p-6 text-white" 
+                     style="background: linear-gradient(135deg, ${vt.bgColor} 0%, #050103 120%);">
+                    
+                    <div class="absolute inset-0 opacity-25" style="background-image: radial-gradient(white 2px, transparent 2px); background-size: 20px 20px;"></div>
+
+                    <div class="relative z-10 flex flex-col items-center text-center">
+                        <span class="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2 border border-white/30">
+                            ${vt.gen === 'gen1' ? '🐉 Generación 1' : vt.gen === 'gen2' ? '🐲 Generación 2' : '👑 Líder / Fundador'}
+                        </span>
+                        <h2 class="text-3xl sm:text-4xl font-black drop-shadow-md">${vt.name}</h2>
+                        <p class="text-xs sm:text-sm font-bold text-rose-200 mt-1">${vt.title || ''}</p>
+                    </div>
+                </div>
+
+                <div class="px-6 pb-8 pt-0 relative text-slate-200">
+                    
+                    <div class="flex justify-between items-end -mt-16 sm:-mt-20 mb-6 px-2">
+                        <div class="w-28 h-28 sm:w-36 sm:h-36 rounded-full border-4 border-slate-900 shadow-xl overflow-hidden bg-slate-900 relative"
+                             style="background-color: ${vt.bgColor}">
+                            <img src="${vt.avatar}" class="w-full h-full object-cover">
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            ${isAdmin ? `
+                                <button onclick="editVTuber(${index})" class="bg-slate-950 hover:bg-slate-800 text-gold-400 border border-gold-500/50 font-bold px-3 py-2 rounded-2xl text-xs flex items-center gap-1 shadow">
+                                    ✏️ Editar
+                                </button>
+                                <button onclick="deleteVTuberDirect(${index})" class="bg-dragon-950 hover:bg-dragon-900 text-dragon-300 font-bold px-3 py-2 rounded-2xl text-xs flex items-center gap-1 border border-dragon-800">
+                                    🗑️ Borrar
+                                </button>
+                            ` : ''}
+
+                            ${vt.isLive ? `
+                                <a href="https://twitch.tv/${vt.twitch || ''}" target="_blank" class="bg-dragon-600 hover:bg-dragon-500 text-white font-bold px-4 py-2 rounded-2xl text-xs sm:text-sm flex items-center gap-2 shadow-lg animate-pulse">
+                                    <i class="fa-solid fa-signal"></i> Ver Stream
+                                </a>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    ${vt.phrase ? `
+                        <div class="bg-dragon-950/60 border-l-4 border-dragon-500 p-3 rounded-r-2xl mb-6 italic text-dragon-200 text-sm font-medium">
+                            "${vt.phrase}"
+                        </div>
+                    ` : ''}
+
+                    <div class="mb-6">
+                        <h4 class="text-xs font-extrabold text-dragon-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-book-open"></i> Lore & Biografía
+                        </h4>
+                        <p class="text-slate-300 text-xs sm:text-sm leading-relaxed bg-slate-950/80 p-4 rounded-2xl border border-dragon-900/60">
+                            ${vt.lore || 'Este espíritu aún no ha revelado su historia mística.'}
+                        </p>
+                    </div>
+
+                    <div class="mb-6">
+                        <h4 class="text-xs font-extrabold text-dragon-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-volume-high text-gold-400"></i> Voice Clips
+                        </h4>
+                        <div class="flex flex-wrap gap-2">
+                            ${(vt.audioSamples || ["¡Hola dragoncitos!", "Ehehe~"]).map(sample => `
+                                <button onclick="playSynthesizedSound('sparkle', '${sample}')" class="px-3 py-2 bg-dragon-950 hover:bg-dragon-600 hover:text-white text-dragon-200 font-bold text-xs rounded-xl border border-dragon-800 transition-all flex items-center gap-2">
+                                    <i class="fa-solid fa-play text-[10px]"></i> "${sample}"
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-extrabold text-dragon-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-share-nodes"></i> Redes Sociales
+                        </h4>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <a href="${vt.twitch ? `https://twitch.tv/${vt.twitch}` : '#'}" target="_blank" 
+                               class="flex items-center gap-2 p-3 rounded-2xl bg-slate-950 hover:bg-purple-950/80 text-purple-300 font-bold text-xs border border-purple-900 transition-all">
+                                <i class="fa-brands fa-twitch text-lg"></i>
+                                <span class="truncate">${vt.twitch || 'Twitch'}</span>
+                            </a>
+                            <a href="${vt.youtube ? `https://youtube.com/${vt.youtube}` : '#'}" target="_blank" 
+                               class="flex items-center gap-2 p-3 rounded-2xl bg-slate-950 hover:bg-dragon-950/80 text-dragon-400 font-bold text-xs border border-dragon-900 transition-all">
+                                <i class="fa-brands fa-youtube text-lg"></i>
+                                <span class="truncate">${vt.youtube || 'YouTube'}</span>
+                            </a>
+                            <a href="${vt.twitter ? `https://x.com/${vt.twitter}` : '#'}" target="_blank" 
+                               class="flex items-center gap-2 p-3 rounded-2xl bg-slate-950 hover:bg-slate-900 text-slate-300 font-bold text-xs border border-slate-700 transition-all">
+                                <i class="fa-brands fa-x-twitter text-lg"></i>
+                                <span class="truncate">${vt.twitter || 'Twitter'}</span>
+                            </a>
+                            <a href="#" 
+                               class="flex items-center gap-2 p-3 rounded-2xl bg-slate-950 hover:bg-indigo-950/80 text-indigo-300 font-bold text-xs border border-indigo-900 transition-all">
+                                <i class="fa-brands fa-discord text-lg"></i>
+                                <span class="truncate">${vt.discord || 'Community'}</span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            `;
+
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            container.classList.remove('scale-90');
+            container.classList.add('scale-100');
+            playSynthesizedSound('sparkle');
+        }
+
+        function closeProfileModal() {
+            const modal = document.getElementById('profileModal');
+            const container = document.getElementById('modalContainer');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            container.classList.remove('scale-100');
+            container.classList.add('scale-90');
+        }
+
+        function openManageModal() {
+            if (!isAdmin) return;
+            document.getElementById('vtuberForm').reset();
+            document.getElementById('editIndex').value = "-1";
+            document.getElementById('editorTitle').innerText = "Añadir Nuevo VTuber";
+            document.getElementById('btnDeleteVTuber').classList.add('hidden');
+            
+            const modal = document.getElementById('manageModal');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function closeManageModal() {
+            document.getElementById('manageModal').classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        function editVTuber(index) {
+            if (!isAdmin) return;
+            closeProfileModal();
+            const vt = vtubers[index];
+            if (!vt) return;
+
+            document.getElementById('editIndex').value = index;
+            document.getElementById('editorTitle').innerText = "Editar VTuber: " + vt.name;
+            document.getElementById('vName').value = vt.name || '';
+            document.getElementById('vTitle').value = vt.title || '';
+            document.getElementById('vGen').value = vt.gen || 'gen1';
+            document.getElementById('vAvatar').value = vt.avatar || '';
+            document.getElementById('vBgColor').value = vt.bgColor || '#E11D48';
+            document.getElementById('vBgHex').innerText = vt.bgColor || '#E11D48';
+            document.getElementById('vIsLive').checked = !!vt.isLive;
+            document.getElementById('vPhrase').value = vt.phrase || '';
+            document.getElementById('vTwitch').value = vt.twitch || '';
+            document.getElementById('vYoutube').value = vt.youtube || '';
+            document.getElementById('vTwitter').value = vt.twitter || '';
+            document.getElementById('vDiscord').value = vt.discord || '';
+            document.getElementById('vLore').value = vt.lore || '';
+
+            document.getElementById('btnDeleteVTuber').classList.remove('hidden');
+
+            const modal = document.getElementById('manageModal');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function deleteVTuberDirect(index) {
+            if (!isAdmin || index < 0 || index >= vtubers.length) return;
+            const vt = vtubers[index];
+            
+            showCustomConfirm(`¿Eliminar a "${vt.name}"?`, "Se borrará permanentemente de tu lista.", () => {
+                vtubers.splice(index, 1);
+                saveData();
+                renderGrid();
+                closeProfileModal();
+                showToast(`🗑️ ${vt.name} fue eliminado.`);
+            });
+        }
+
+        function confirmDeleteFromForm() {
+            const editIdx = parseInt(document.getElementById('editIndex').value);
+            if (editIdx >= 0) {
+                deleteVTuberDirect(editIdx);
+                closeManageModal();
+            }
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('vAvatar').value = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            if (!isAdmin) return;
+
+            const editIdx = parseInt(document.getElementById('editIndex').value);
+            const name = document.getElementById('vName').value;
+            const title = document.getElementById('vTitle').value;
+            const gen = document.getElementById('vGen').value;
+            let avatar = document.getElementById('vAvatar').value.trim();
+            const bgColor = document.getElementById('vBgColor').value;
+            const isLive = document.getElementById('vIsLive').checked;
+            const phrase = document.getElementById('vPhrase').value;
+            const twitch = document.getElementById('vTwitch').value;
+            const youtube = document.getElementById('vYoutube').value;
+            const twitter = document.getElementById('vTwitter').value;
+            const discord = document.getElementById('vDiscord').value;
+            const lore = document.getElementById('vLore').value;
+
+            if (!avatar) {
+                avatar = createCuteSvgAvatar(bgColor, bgColor, 1);
+            }
+
+            const payload = {
+                id: editIdx >= 0 ? vtubers[editIdx].id : 'vt_' + Date.now(),
+                name,
+                title,
+                gen,
+                avatar,
+                bgColor,
+                isLive,
+                phrase,
+                twitch,
+                youtube,
+                twitter,
+                discord,
+                lore,
+                audioSamples: editIdx >= 0 && vtubers[editIdx].audioSamples ? vtubers[editIdx].audioSamples : ["¡Hola a todos!", "Nyaa~", "¡Vamos!"]
+            };
+
+            if (editIdx >= 0) {
+                vtubers[editIdx] = payload;
+                showToast("✨ VTuber actualizado correctamente");
+            } else {
+                vtubers.unshift(payload);
+                showToast("🎉 ¡Nuevo VTuber añadido!");
+            }
+
+            saveData();
+            renderGrid();
+            closeManageModal();
+            playSynthesizedSound('sparkle');
+        }
+
+        function openFanartModal() {
+            document.getElementById('faTitle').value = '';
+            document.getElementById('faArtist').value = '';
+            document.getElementById('faImage').value = '';
+            document.getElementById('fanartModal').classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function closeFanartModal() {
+            document.getElementById('fanartModal').classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        function handleFanartSubmit(e) {
+            e.preventDefault();
+            const title = document.getElementById('faTitle').value.trim();
+            const artist = document.getElementById('faArtist').value.trim();
+            const image = document.getElementById('faImage').value.trim();
+
+            if (!title || !artist || !image) return;
+
+            fanartList.unshift({
+                id: Date.now(),
+                title,
+                artist,
+                image,
+                likes: 1
+            });
+
+            saveData();
+            renderFanart();
+            closeFanartModal();
+            showToast("🎨 ¡Fan Art añadido con éxito!");
+            playSynthesizedSound('cheer');
+        }
+
+        function exportData() {
+            const backup = {
+                vtubers,
+                fanart: fanartList
+            };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", "spirit_dragons_data.json");
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+        }
+
+        function importDataTrigger() {
+            document.getElementById('importFileInput').click();
+        }
+
+        function importData(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const parsed = JSON.parse(evt.target.result);
+                    if (Array.isArray(parsed)) {
+                        vtubers = parsed;
+                    } else if (parsed.vtubers) {
+                        vtubers = parsed.vtubers;
+                        if (parsed.fanart) fanartList = parsed.fanart;
+                    }
+                    saveData();
+                    renderGrid();
+                    renderFanart();
+                    showToast("📥 Datos importados con éxito");
+                } catch(err) {
+                    showToast("⚠️ Error al leer el archivo JSON");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function showCustomConfirm(title, message, onConfirm) {
+            const modal = document.getElementById('customConfirmModal');
+            document.getElementById('confirmTitle').innerText = title;
+            document.getElementById('confirmMessage').innerText = message;
+
+            const btnOk = document.getElementById('confirmBtnOk');
+            const btnCancel = document.getElementById('confirmBtnCancel');
+
+            const handleOk = () => {
+                cleanup();
+                onConfirm();
+            };
+
+            const cleanup = () => {
+                btnOk.removeEventListener('click', handleOk);
+                btnCancel.removeEventListener('click', cleanup);
+                modal.classList.add('opacity-0', 'pointer-events-none');
+            };
+
+            btnOk.addEventListener('click', handleOk);
+            btnCancel.addEventListener('click', cleanup);
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function showToast(text) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-6 right-6 bg-slate-900 text-white font-bold px-4 py-3 rounded-2xl shadow-2xl z-50 text-xs flex items-center gap-2 border-2 border-dragon-500 animate-bounce';
+            toast.innerHTML = text;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        function initSparkles() {
+            const canvas = document.getElementById('sparkleCanvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+
+            for (let i = 0; i < 45; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 3.5 + 1,
+                    speedY: Math.random() * 0.7 + 0.2,
+                    opacity: Math.random(),
+                    color: ['#F43F5E', '#E11D48', '#F59E0B', '#FDA4AF', '#FFFFFF'][Math.floor(Math.random() * 5)]
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.y -= p.speedY;
+                    if (p.y < 0) p.y = canvas.height;
+                    
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = p.opacity;
+                    ctx.fill();
+                });
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+    </script>
+</body>
+</html>
