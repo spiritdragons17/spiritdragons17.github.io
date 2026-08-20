@@ -1,19 +1,19 @@
 {
-  "updatedAt": "2026-08-20T22:31:08.311Z",
+  "updatedAt": "2026-08-20T23:04:39.832Z",
   "members": {
     "vt_1785319643301": {
+      "isLive": true,
+      "platform": "twitch",
+      "title": "estoy testeando cosas no molestar",
+      "url": "https://twitch.tv/davidstarrk17"
+    },
+    "almiral": {
       "isLive": false,
       "platform": "",
       "title": "",
       "url": ""
     },
-    "vt_1785370754426": {
-      "isLive": false,
-      "platform": "",
-      "title": "",
-      "url": ""
-    },
-    "vt_1785513723964": {
+    "Sakuya": {
       "isLive": false,
       "platform": "",
       "title": "",
