@@ -1,0 +1,35 @@
+name: Actualizar estado de directos
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update-live-status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Actualizar estado Twitch + YouTube
+        env:
+          TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}
+          TWITCH_CLIENT_SECRET: ${{ secrets.TWITCH_CLIENT_SECRET }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: node scripts/update-live-status.mjs
+
+      - name: Publicar live-status.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add live-status.json
+          if git diff --cached --quiet; then
+            echo "Sin cambios de estado."
+          else
+            git commit -m "chore: actualizar estado de directos"
+            git push
+          fi
