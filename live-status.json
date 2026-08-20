@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-08-20T23:04:39.832Z",
+  "updatedAt": "2026-08-20T23:17:18.569Z",
   "members": {
     "vt_1785319643301": {
-      "isLive": true,
-      "platform": "twitch",
-      "title": "estoy testeando cosas no molestar",
-      "url": "https://twitch.tv/davidstarrk17"
+      "isLive": false,
+      "platform": "",
+      "title": "",
+      "url": ""
     },
     "almiral": {
       "isLive": false,
