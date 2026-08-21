@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-20T23:57:22.312Z",
+  "updatedAt": "2026-08-21T11:56:29.068Z",
   "members": {
     "vt_1785319643301": {
       "isLive": false,
@@ -14,10 +14,10 @@
       "url": ""
     },
     "Sakuya": {
-      "isLive": false,
-      "platform": "",
-      "title": "",
-      "url": ""
+      "isLive": true,
+      "platform": "youtube",
+      "title": "【がんばれゴエモン外伝消えた黄金キセル】求)黄金キセル 出)お酒 #01【飲酒配信】",
+      "url": "https://www.youtube.com/watch?v=S6PrnkiADcY"
     }
   }
 }
