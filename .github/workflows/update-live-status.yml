@@ -2,7 +2,7 @@ name: Actualizar estado de directos
 
 on:
   schedule:
-    # Cada 5 minutos.
+    # Cada 1 minutos.
     - cron: "*/1 * * * *"
   workflow_dispatch:
 
