@@ -27,7 +27,7 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 2
+          node-version: 20
 
       - name: Actualizar estado de YouTube y Twitch
         env:
