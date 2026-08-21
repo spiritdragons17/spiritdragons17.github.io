@@ -3,7 +3,7 @@ name: Actualizar estado de directos
 on:
   schedule:
     # Cada 5 minutos.
-    - cron: "*/5 * * * *"
+    - cron: "*/1 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -16,7 +16,7 @@ concurrency:
 jobs:
   update-live-status:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 1
 
     steps:
       - name: Descargar repositorio
@@ -27,7 +27,7 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 2
 
       - name: Actualizar estado de YouTube y Twitch
         env:
